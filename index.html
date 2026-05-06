@@ -1826,5 +1826,21 @@ function bindEvents() {
 // ── BOOT ──
 render();
 </script>
+  <script>
+  // Prevents the right-click menu from appearing
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Prevents keyboard-based inspection and source viewing
+  document.addEventListener('keydown', e => {
+    if (
+      e.key === "F12" || 
+      (e.ctrlKey && (e.key === "u" || e.key === "U")) || 
+      (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase()))
+    ) {
+      e.preventDefault();
+      return false;
+    }
+  });
+</script>
 </body>
 </html>
