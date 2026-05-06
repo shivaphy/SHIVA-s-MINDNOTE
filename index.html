@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIVA's MindNote — Faculty Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #f5f4f0;
+    --bg2:      #ffffff;
+    --bg3:      #eeecea;
+    --bg4:      #e8e6e1;
+    --border:   rgba(0,0,0,0.08);
+    --border2:  rgba(0,0,0,0.14);
+    --accent:   #2563eb;
+    --accent2:  #4f81f5;
+    --accent3:  #0ea5e9;
+    --accentbg: rgba(37,99,235,0.07);
+    --text:     #1a1a2e;
+    --text2:    #3d3d55;
+    --muted:    #7c7c96;
+    --success:  #059669;
+    --warn:     #d97706;
+    --danger:   #dc2626;
+    --card:     #ffffff;
+    --sidebar:  #ffffff;
+    --shadow:   0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow2:  0 4px 12px rgba(0,0,0,0.08);
+    --violet:   #7c3aed;
+    --teal:     #0d9488;
+    --amber:    #b45309;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  h1,h2,h3,h4{font-family:'Plus Jakarta Sans',sans-serif;}
+  a{color:var(--accent);}
+
+  /* ── LAYOUT ── */
+  .app{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{width:236px;min-width:236px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;box-shadow:var(--shadow);z-index:20;}
+  .main{flex:1;overflow-y:auto;background:var(--bg);}
+
+  /* ── SIDEBAR ── */
+  .logo{padding:22px 18px 14px;border-bottom:1px solid var(--border);}
+  .logo-mark{display:flex;align-items:center;gap:10px;}
+  .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 8px rgba(37,99,235,0.3);}
+  .logo-text{font-size:15px;font-weight:700;letter-spacing:-0.3px;color:var(--text);}
+  .logo-text span{color:var(--accent);}
+  .logo-sub{font-size:10px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;margin-top:4px;padding-left:44px;}
+
+  .nav{padding:12px 10px;flex:1;overflow-y:auto;}
+  .nav-section{font-size:10px;color:var(--muted);letter-spacing:1.3px;text-transform:uppercase;padding:10px 8px 4px;margin-top:4px;font-weight:600;}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;font-size:13.5px;color:var(--muted);transition:all 0.14s;margin-bottom:1px;font-weight:500;}
+  .nav-item:hover{background:var(--bg3);color:var(--text2);}
+  .nav-item.active{background:var(--accentbg);color:var(--accent);}
+  .nav-item.active .nav-icon-wrap{background:var(--accent);color:#fff;}
+  .nav-icon-wrap{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--bg3);transition:all 0.14s;flex-shrink:0;}
+  .nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:700;}
+
+  .sidebar-bottom{padding:12px;border-top:1px solid var(--border);}
+  .user-chip{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);cursor:pointer;transition:background 0.14s;}
+  .user-chip:hover{background:var(--bg4);}
+  .avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#818cf8);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+  .user-name{font-size:12.5px;font-weight:600;color:var(--text);}
+  .user-plan{font-size:10px;color:var(--accent);font-weight:600;}
+
+  /* ── HEADER ── */
+  .header{display:flex;align-items:center;gap:12px;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:10;box-shadow:var(--shadow);}
+  .header h2{font-size:19px;font-weight:700;flex:1;color:var(--text);}
+  .header-sub{font-size:12px;color:var(--muted);margin-top:1px;}
+
+  /* ── BUTTONS ── */
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:9px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all 0.15s;border:none;font-weight:600;}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.25);}
+  .btn-primary:hover{background:#1d4ed8;transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,0.3);}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);}
+  .btn-ghost:hover{background:var(--bg3);color:var(--text2);}
+  .btn-sm{padding:6px 12px;font-size:12px;}
+  .btn-danger{background:rgba(220,38,38,0.08);color:var(--danger);border:1px solid rgba(220,38,38,0.2);}
+  .btn-danger:hover{background:rgba(220,38,38,0.15);}
+  .btn-success{background:rgba(5,150,105,0.1);color:var(--success);border:1px solid rgba(5,150,105,0.25);}
+  .btn-success:hover{background:rgba(5,150,105,0.18);}
+  .btn-violet{background:rgba(124,58,237,0.1);color:var(--violet);border:1px solid rgba(124,58,237,0.25);}
+  .btn-violet:hover{background:rgba(124,58,237,0.18);}
+  .btn-amber{background:rgba(217,119,6,0.1);color:var(--amber);border:1px solid rgba(217,119,6,0.25);}
+  .btn-amber:hover{background:rgba(217,119,6,0.18);}
+
+  /* ── CONTENT ── */
+  .content{padding:24px 28px;flex:1;}
+
+  /* ── UPLOAD ── */
+  .upload-zone{border:2px dashed rgba(37,99,235,0.25);border-radius:18px;padding:52px 32px;text-align:center;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,rgba(37,99,235,0.03),rgba(79,129,245,0.03));}
+  .upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(79,129,245,0.06));transform:scale(1.005);}
+  .upload-icon-wrap{width:70px;height:70px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px;box-shadow:0 6px 20px rgba(37,99,235,0.25);}
+  .upload-title{font-size:19px;font-weight:700;margin-bottom:7px;color:var(--text);}
+  .upload-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto;}
+  .upload-formats{display:flex;gap:7px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+  .format-tag{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--bg3);border:1px solid var(--border2);color:var(--muted);font-weight:500;}
+  #fileInput{display:none;}
+
+  /* ── LANG ROW ── */
+  .lang-row{display:flex;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap;}
+  .lang-label{font-size:13px;color:var(--muted);white-space:nowrap;font-weight:500;}
+  .lang-select{background:var(--bg2);border:1.5px solid var(--border2);color:var(--text);padding:8px 14px;border-radius:9px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;outline:none;font-weight:500;box-shadow:var(--shadow);}
+  .lang-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+
+  /* ── PROCESS CARD ── */
+  .process-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:20px;box-shadow:var(--shadow2);}
+  .process-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .file-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(37,99,235,0.25);}
+  .file-info h4{font-size:14px;font-weight:700;color:var(--text);}
+  .file-info p{font-size:12px;color:var(--muted);margin-top:2px;}
+  .progress-bar{height:7px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:8px;}
+  .progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s ease;}
+  .progress-label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;font-weight:500;}
+  .steps{display:flex;margin-top:20px;}
+  .step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;}
+  .step:not(:last-child)::after{content:'';position:absolute;top:13px;left:58%;width:84%;height:2px;background:var(--bg4);z-index:0;}
+  .step.done:not(:last-child)::after{background:var(--accent);}
+  .step-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;z-index:1;position:relative;border:2px solid var(--bg4);background:var(--bg2);color:var(--muted);transition:all 0.3s;font-weight:700;}
+  .step.done .step-dot{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .step.active .step-dot{border-color:var(--accent);color:var(--accent);background:rgba(37,99,235,0.1);animation:pulse 1.5s infinite;}
+  .step-label{font-size:10px;color:var(--muted);margin-top:6px;text-align:center;font-weight:600;letter-spacing:0.3px;}
+  .step.done .step-label{color:var(--accent);}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,0.35)}50%{box-shadow:0 0 0 7px rgba(37,99,235,0)}}
+
+  /* ── WAVEFORM ── */
+  .waveform{display:flex;align-items:center;gap:3px;height:36px;margin-top:14px;justify-content:center;}
+  .wave-bar{width:3px;background:var(--accent2);border-radius:2px;animation:wave 1.2s ease-in-out infinite;opacity:0.7;}
+  @keyframes wave{0%,100%{transform:scaleY(0.25)}50%{transform:scaleY(1)}}
+
+  /* ── SPINNER ── */
+  .spinner{width:18px;height:18px;border:2.5px solid var(--bg4);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── RESULTS ── */
+  .results-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;}
+  .result-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow);}
+  .result-card.full{grid-column:1/-1;}
+  .result-card h3{font-size:13.5px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--text);}
+  .card-badge{font-size:10px;padding:2px 8px;border-radius:20px;margin-left:auto;font-weight:600;}
+  .badge-gemini{background:rgba(37,99,235,0.1);color:var(--accent);border:1px solid rgba(37,99,235,0.2);}
+  .badge-lang{background:rgba(14,165,233,0.1);color:#0284c7;border:1px solid rgba(14,165,233,0.2);}
+  .badge-success{background:rgba(5,150,105,0.1);color:var(--success);border:1px solid rgba(5,150,105,0.2);}
+  .badge-violet{background:rgba(124,58,237,0.1);color:var(--violet);border:1px solid rgba(124,58,237,0.2);}
+  .badge-amber{background:rgba(217,119,6,0.1);color:var(--amber);border:1px solid rgba(217,119,6,0.2);}
+
+  .transcript-text{font-size:13px;line-height:1.85;color:var(--text2);max-height:210px;overflow-y:auto;white-space:pre-wrap;}
+  .transcript-text::-webkit-scrollbar{width:4px;}
+  .transcript-text::-webkit-scrollbar-track{background:var(--bg3);border-radius:2px;}
+  .transcript-text::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  .summary-text{font-size:13px;line-height:1.85;color:var(--text2);}
+  .action-items{list-style:none;}
+  .action-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);}
+  .action-item:last-child{border-bottom:none;}
+  .ai-check{width:17px;height:17px;border-radius:5px;border:2px solid var(--accent);margin-top:1px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);transition:all 0.15s;}
+  .ai-check.done{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .sentiment-bar{display:flex;gap:10px;align-items:center;margin-top:8px;}
+  .sentiment-label{font-size:12px;color:var(--muted);width:65px;font-weight:500;}
+  .sent-track{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;}
+  .sent-fill{height:100%;border-radius:4px;}
+  .sent-pct{font-size:12px;color:var(--muted);width:32px;text-align:right;font-weight:600;}
+  .keyword-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .keyword{font-size:11px;padding:4px 11px;border-radius:20px;background:var(--accentbg);border:1px solid rgba(37,99,235,0.18);color:var(--accent);font-weight:600;}
+  .chapter{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);}
+  .chapter:last-child{border-bottom:none;}
+  .chapter-time{font-size:11px;color:var(--accent);font-weight:700;width:44px;flex-shrink:0;margin-top:2px;background:var(--accentbg);padding:2px 6px;border-radius:6px;text-align:center;}
+  .chapter-text{font-size:13px;color:var(--text2);line-height:1.6;}
+
+  /* ── MEETINGS LIST ── */
+  .meetings-list{display:flex;flex-direction:column;gap:10px;}
+  .meeting-row{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:15px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow);}
+  .meeting-row:hover{border-color:var(--accent2);box-shadow:var(--shadow2);transform:translateY(-1px);}
+  .meeting-thumb{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(37,99,235,0.15),rgba(79,129,245,0.1));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid rgba(37,99,235,0.1);}
+  .meeting-info{flex:1;min-width:0;}
+  .meeting-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
+  .meeting-meta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;gap:14px;flex-wrap:wrap;font-weight:500;}
+  .status-chip{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;}
+  .status-done{background:rgba(5,150,105,0.1);color:var(--success);border:1px solid rgba(5,150,105,0.2);}
+  .meeting-actions{display:flex;gap:6px;}
+
+  /* ── STATS ── */
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow);}
+  .stat-val{font-size:26px;font-weight:700;color:var(--text);}
+  .stat-label{font-size:12px;color:var(--muted);margin-top:4px;font-weight:500;}
+  .stat-icon{font-size:22px;margin-bottom:6px;}
+
+  /* ── SEARCH BAR ── */
+  .search-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:9px 15px;margin-bottom:18px;box-shadow:var(--shadow);}
+  .search-bar input{background:transparent;border:none;outline:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:var(--text);flex:1;font-weight:500;}
+  .search-bar input::placeholder{color:var(--muted);}
+  .search-icon{color:var(--muted);font-size:15px;}
+
+  /* ── EMPTY STATE ── */
+  .empty{text-align:center;padding:56px 24px;}
+  .empty-icon{font-size:52px;margin-bottom:14px;display:block;opacity:0.35;}
+  .empty-title{font-size:19px;font-weight:700;margin-bottom:7px;color:var(--text);}
+  .empty-sub{font-size:13px;color:var(--muted);line-height:1.6;}
+
+  /* ── NOTIFY ── */
+  .notify{position:fixed;top:20px;right:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 18px;font-size:13px;display:flex;align-items:center;gap:10px;z-index:1000;animation:slideIn 0.3s ease;max-width:340px;box-shadow:var(--shadow2);font-weight:500;color:var(--text);}
+  @keyframes slideIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+  .notify.success{border-color:rgba(5,150,105,0.3);background:rgba(5,150,105,0.05);}
+  .notify.error{border-color:rgba(220,38,38,0.3);background:rgba(220,38,38,0.05);}
+
+  /* ── DIVIDER ── */
+  .section-divider{height:1px;background:var(--border);margin:18px 0;}
+
+  /* ── COPY BTN ── */
+  .copy-btn{cursor:pointer;color:var(--muted);font-size:12px;padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:transparent;transition:all 0.14s;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;}
+  .copy-btn:hover{background:var(--bg3);color:var(--text2);}
+
+  /* ── SUCCESS BANNER ── */
+  .success-banner{background:rgba(5,150,105,0.05);border:1px solid rgba(5,150,105,0.25);border-radius:13px;padding:16px 20px;margin-bottom:4px;display:flex;align-items:center;gap:12px;}
+  .success-banner .info{flex:1;}
+  .success-banner .title{font-size:14px;font-weight:700;color:var(--text);}
+  .success-banner .sub{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500;}
+
+  /* ── SETTINGS ── */
+  .settings-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:560px;margin-bottom:14px;box-shadow:var(--shadow);}
+  .settings-card h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .settings-input{width:100%;background:var(--bg);border:1.5px solid var(--border2);color:var(--text);padding:9px 13px;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;margin-bottom:10px;font-weight:500;}
+  .settings-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+  .feature-row{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+  .feature-item{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--text2);font-weight:500;}
+  .feature-item input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;}
+
+  /* ── SCROLLBAR ── */
+  .main::-webkit-scrollbar{width:6px;}
+  .main::-webkit-scrollbar-track{background:var(--bg3);}
+  .main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+  /* ══════════════════════════════════
+     NEW: MEETING PLANNER
+  ══════════════════════════════════ */
+  .planner-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:var(--shadow2);margin-bottom:16px;}
+  .planner-card h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group.full{grid-column:1/-1;}
+  .form-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.3px;}
+  .form-input{background:var(--bg);border:1.5px solid var(--border2);color:var(--text);padding:9px 13px;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;font-weight:500;width:100%;}
+  .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+  .agenda-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .agenda-item-row{display:flex;align-items:center;gap:8px;}
+  .agenda-num{width:22px;height:22px;border-radius:50%;background:var(--accentbg);color:var(--accent);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .agenda-input{flex:1;background:var(--bg);border:1.5px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;font-weight:500;}
+  .agenda-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+  .agenda-rm{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:2px 6px;border-radius:5px;transition:all 0.14s;}
+  .agenda-rm:hover{background:rgba(220,38,38,0.1);color:var(--danger);}
+  .planned-meetings-list{display:flex;flex-direction:column;gap:10px;}
+  .planned-meeting-row{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 20px;box-shadow:var(--shadow);transition:all 0.15s;}
+  .planned-meeting-row:hover{border-color:rgba(124,58,237,0.3);box-shadow:var(--shadow2);}
+  .planned-header{display:flex;align-items:center;gap:12px;}
+  .planned-icon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(124,58,237,0.06));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid rgba(124,58,237,0.15);}
+  .planned-info{flex:1;min-width:0;}
+  .planned-title{font-size:14px;font-weight:600;color:var(--text);}
+  .planned-meta{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500;}
+  .planned-agenda{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+  .planned-agenda-item{display:flex;gap:8px;font-size:13px;color:var(--text2);padding:4px 0;}
+  .planned-agenda-num{color:var(--accent);font-weight:700;font-size:12px;margin-top:1px;width:18px;flex-shrink:0;}
+
+  /* ══════════════════════════════════
+     NEW: FILE VAULT
+  ══════════════════════════════════ */
+  .vault-meeting-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .vault-meeting-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .vault-meeting-title{font-size:14px;font-weight:700;color:var(--text);}
+  .vault-meeting-meta{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500;}
+  .vault-drop{border:2px dashed rgba(13,148,136,0.3);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(13,148,136,0.03);margin-bottom:12px;}
+  .vault-drop:hover,.vault-drop.drag{border-color:var(--teal);background:rgba(13,148,136,0.07);}
+  .vault-drop p{font-size:13px;color:var(--muted);font-weight:500;}
+  .vault-drop span{font-size:11px;color:var(--muted);}
+  .vault-files{display:flex;flex-direction:column;gap:8px;}
+  .vault-file-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);}
+  .vault-file-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .vault-file-icon.pdf{background:rgba(220,38,38,0.1);}
+  .vault-file-icon.ppt{background:rgba(217,119,6,0.1);}
+  .vault-file-icon.img{background:rgba(5,150,105,0.1);}
+  .vault-file-icon.doc{background:rgba(37,99,235,0.1);}
+  .vault-file-name{flex:1;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .vault-file-size{font-size:11px;color:var(--muted);font-weight:500;white-space:nowrap;}
+  .vault-file-agenda{font-size:11px;color:var(--accent);background:var(--accentbg);padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap;}
+
+  /* ══════════════════════════════════
+     NEW: FACULTY DIRECTORY
+  ══════════════════════════════════ */
+  .faculty-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:16px;}
+  .faculty-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;transition:all 0.15s;}
+  .faculty-card:hover{border-color:rgba(37,99,235,0.25);box-shadow:var(--shadow2);}
+  .faculty-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;}
+  .faculty-info{flex:1;min-width:0;}
+  .faculty-name{font-size:13.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .faculty-desig{font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px;}
+  .faculty-email{font-size:11px;color:var(--accent);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .faculty-remove{background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px;border-radius:5px;transition:all 0.14s;flex-shrink:0;}
+  .faculty-remove:hover{background:rgba(220,38,38,0.1);color:var(--danger);}
+  .group-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.18);font-size:11px;font-weight:600;color:var(--accent);cursor:pointer;transition:all 0.14s;}
+  .group-chip:hover{background:rgba(37,99,235,0.15);}
+  .group-chip.active{background:var(--accent);color:#fff;}
+
+  /* ══════════════════════════════════
+     NEW: PRESENTATION MODE
+  ══════════════════════════════════ */
+  .pres-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;height:calc(100vh - 80px);overflow:hidden;}
+  .pres-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;}
+  .pres-panel-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;background:var(--bg2);}
+  .pres-panel-body{flex:1;overflow-y:auto;padding:16px;}
+  .pres-file-list{display:flex;flex-direction:column;gap:8px;}
+  .pres-file-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all 0.14s;}
+  .pres-file-item:hover,.pres-file-item.active{background:var(--accentbg);border-color:rgba(37,99,235,0.25);}
+  .pres-viewer{width:100%;height:100%;border:none;}
+  .pres-img-viewer{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;}
+  .pres-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--muted);}
+  .pres-placeholder span:first-child{font-size:40px;opacity:0.3;}
+  .pres-placeholder p{font-size:13px;font-weight:500;}
+
+  /* ── TABS ── */
+  .tabs{display:flex;gap:4px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:20px;}
+  .tab{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);transition:all 0.15s;}
+  .tab.active{background:var(--card);color:var(--text);box-shadow:var(--shadow);}
+  .tab:hover:not(.active){color:var(--text2);}
+
+  /* ── TAG INPUT AREA ── */
+  .tag-input-area{background:var(--bg);border:1.5px solid var(--border2);border-radius:9px;padding:8px 12px;min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;cursor:text;}
+  .tag-input-area:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+  .tag-item{display:inline-flex;align-items:center;gap:4px;background:var(--accentbg);border:1px solid rgba(37,99,235,0.2);color:var(--accent);font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600;}
+  .tag-item button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:13px;line-height:1;padding:0;display:flex;}
+  .tag-bare-input{border:none;outline:none;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--text);font-weight:500;min-width:120px;flex:1;}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:720px){
+    .sidebar{width:64px;min-width:64px;}
+    .logo-text,.logo-sub,.nav-item span,.user-name,.user-plan,.nav-section{display:none;}
+    .nav-item{justify-content:center;padding:10px;}
+    .nav-icon-wrap{margin:0;}
+    .user-chip{justify-content:center;padding:8px;}
+    .results-grid{grid-template-columns:1fr;}
+    .stats-row{grid-template-columns:repeat(2,1fr);}
+    .content{padding:16px;}
+    .header{padding:13px 16px;}
+    .header h2{font-size:16px;}
+    .form-row{grid-template-columns:1fr;}
+    .faculty-grid{grid-template-columns:1fr;}
+    .pres-layout{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🧠</div>
+        <div class="logo-text">SHIVA's <span>MindNote</span></div>
+      </div>
+      <div class="logo-sub">Faculty Edition</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Workspace</div>
+      <div class="nav-item" data-page="upload" onclick="switchPage('upload')">
+        <div class="nav-icon-wrap">🎙️</div><span>New Meeting</span>
+      </div>
+      <div class="nav-item" data-page="meetings" onclick="switchPage('meetings')">
+        <div class="nav-icon-wrap">📋</div><span>All Notes</span>
+        <span class="nav-badge" id="meetingCount">0</span>
+      </div>
+      <div class="nav-item" data-page="search" onclick="switchPage('search')">
+        <div class="nav-icon-wrap">🔍</div><span>Smart Search</span>
+      </div>
+      <div class="nav-section">Faculty Tools</div>
+      <div class="nav-item" data-page="planner" onclick="switchPage('planner')">
+        <div class="nav-icon-wrap">📅</div><span>Plan Meeting</span>
+      </div>
+      <div class="nav-item" data-page="faculty" onclick="switchPage('faculty')">
+        <div class="nav-icon-wrap">👥</div><span>Faculty Group</span>
+      </div>
+      <div class="nav-item" data-page="vault" onclick="switchPage('vault')">
+        <div class="nav-icon-wrap">🗄️</div><span>File Vault</span>
+      </div>
+      <div class="nav-section">Insights</div>
+      <div class="nav-item" data-page="analytics" onclick="switchPage('analytics')">
+        <div class="nav-icon-wrap">📊</div><span>Analytics</span>
+      </div>
+      <div class="nav-item" data-page="actions" onclick="switchPage('actions')">
+        <div class="nav-icon-wrap">✅</div><span>Action Items</span>
+      </div>
+      <div class="nav-section">Account</div>
+      <div class="nav-item" data-page="settings" onclick="switchPage('settings')">
+        <div class="nav-icon-wrap">⚙️</div><span>Settings</span>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="avatar">S</div>
+        <div>
+          <div class="user-name">Shiva</div>
+          <div class="user-plan">✦ Faculty Edition</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main" id="mainContent"></main>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────
+// CONFIG
+const DEFAULT_API_KEY = 'YOUR_GEMINI_API_KEY';
+const LANGS = [
+  {code:'auto',  label:'Auto-detect'},
+  {code:'hi',    label:'हिन्दी (Hindi)'},
+  {code:'kn',    label:'ಕನ್ನಡ (Kannada)'},
+  {code:'te',    label:'తెలుగు (Telugu)'},
+  {code:'ta',    label:'தமிழ் (Tamil)'},
+  {code:'ml',    label:'മലയാളം (Malayalam)'},
+  {code:'mr',    label:'मराठी (Marathi)'},
+  {code:'bn',    label:'বাংলা (Bengali)'},
+  {code:'gu',    label:'ગુજરાતી (Gujarati)'},
+  {code:'pa',    label:'ਪੰਜਾਬੀ (Punjabi)'},
+  {code:'or',    label:'ଓଡ଼ିଆ (Odia)'},
+  {code:'as',    label:'অসমীয়া (Assamese)'},
+  {code:'ur',    label:'اردو (Urdu)'},
+  {code:'en',    label:'English'},
+  {code:'en-hi', label:'Hinglish (EN+HI)'},
+];
+
+const AVATAR_COLORS = [
+  '#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#be185d','#065f46'
+];
+
+// ── STATE ──
+let meetings        = JSON.parse(localStorage.getItem('mindnote_meetings')      || '[]');
+let plannedMeetings = JSON.parse(localStorage.getItem('mindnote_planned')       || '[]');
+let facultyGroups   = JSON.parse(localStorage.getItem('mindnote_faculty_groups')|| '[]');
+let vaultFiles      = JSON.parse(localStorage.getItem('mindnote_vault')         || '[]');
+let currentPage     = 'upload';
+let selectedLang    = 'auto';
+let processingState = null;
+let notification    = null;
+let plannerTab      = 'create';  // 'create' | 'list'
+let facultyTab      = 'list';    // 'list'   | 'add'
+let vaultTab        = 'browse';  // 'browse' | 'upload'
+let presMode        = false;
+let activeVaultFile = null;
+
+// ── PERSISTENCE ──
+function saveMeetings()  { localStorage.setItem('mindnote_meetings',       JSON.stringify(meetings)); }
+function savePlanned()   { localStorage.setItem('mindnote_planned',        JSON.stringify(plannedMeetings)); }
+function saveFaculty()   { localStorage.setItem('mindnote_faculty_groups', JSON.stringify(facultyGroups)); }
+function saveVault()     { localStorage.setItem('mindnote_vault',          JSON.stringify(vaultFiles)); }
+function getKey()        { return localStorage.getItem('mindnote_apikey')  || DEFAULT_API_KEY; }
+
+// ── ROUTING ──
+function switchPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+  render();
+}
+
+function render() {
+  const main = document.getElementById('mainContent');
+  switch(currentPage) {
+    case 'upload':    main.innerHTML = renderUpload();    break;
+    case 'meetings':  main.innerHTML = renderMeetings();  break;
+    case 'search':    main.innerHTML = renderSearch();    break;
+    case 'planner':   main.innerHTML = renderPlanner();   break;
+    case 'faculty':   main.innerHTML = renderFaculty();   break;
+    case 'vault':     main.innerHTML = renderVault();     break;
+    case 'analytics': main.innerHTML = renderAnalytics(); break;
+    case 'actions':   main.innerHTML = renderActions();   break;
+    case 'settings':  main.innerHTML = renderSettings();  break;
+    case 'detail':    main.innerHTML = renderDetail();    break;
+  }
+  bindEvents();
+  document.getElementById('meetingCount').textContent = meetings.length;
+}
+
+// ══════════════════════════════════════
+// PAGE: UPLOAD
+// ══════════════════════════════════════
+function renderUpload() {
+  const opts = LANGS.map(l => `<option value="${l.code}" ${l.code===selectedLang?'selected':''}>${l.label}</option>`).join('');
+  return `
+    <div class="header">
+      <h2>🎙️ New Meeting Note</h2>
+      <span class="card-badge badge-gemini" style="font-size:12px;padding:4px 12px">✦ Gemini AI</span>
+    </div>
+    <div class="content">
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon-wrap">🎧</div>
+        <div class="upload-title">Drop your meeting audio here</div>
+        <div class="upload-sub">Upload any recording — Gemini AI will transcribe, summarise, and extract insights automatically in your language</div>
+        <div class="upload-formats">
+          ${['MP3','MP4','WAV','M4A','OGG','WEBM','FLAC'].map(f=>`<span class="format-tag">${f}</span>`).join('')}
+        </div>
+        <input type="file" id="fileInput" accept="audio/*,video/*">
+      </div>
+      <div class="lang-row">
+        <span class="lang-label">🌐 Meeting language:</span>
+        <select class="lang-select" id="langSelect" onchange="selectedLang=this.value">${opts}</select>
+        <span class="card-badge badge-lang" style="font-size:11px;padding:3px 12px">22 Indian languages</span>
+      </div>
+      ${processingState ? renderProcessing() : ''}
+    </div>`;
+}
+
+function renderProcessing() {
+  const ps = processingState;
+
+  // ── Success: show full results ──
+  if (ps.step >= 5 && ps.result) return renderResults(ps.result, ps.filename);
+
+  // ── Failure: show a clear error card instead of silently hiding ──
+  if (ps.step >= 5 && ps.error) {
+    return `
+      <div class="process-card" style="border-color:rgba(220,38,38,0.25);background:rgba(220,38,38,0.03)">
+        <div class="process-header">
+          <div class="file-icon" style="background:linear-gradient(135deg,var(--danger),#f87171)">❌</div>
+          <div class="file-info">
+            <h4>Transcription Failed — ${escHtml(ps.filename)}</h4>
+            <p style="color:var(--danger);margin-top:4px">${escHtml(ps.error)}</p>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.7;font-weight:500">
+            <strong style="color:var(--text)">Possible causes:</strong><br>
+            • The audio file is empty, corrupted, or contains no speech<br>
+            • Your Gemini API key is invalid or quota-exceeded<br>
+            • The audio format is not supported by Gemini (try MP3 or WAV)<br>
+            • The file is too large (&gt;20 MB inline limit — try a shorter clip)
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm" onclick="processingState=null;render()">🔄 Try Another File</button>
+            <button class="btn btn-ghost btn-sm" onclick="switchPage('settings')">⚙️ Check API Key</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── In-progress spinner ──
+  const stepLabels = ['Upload','Transcribe','Analyse','Summarise','Done'];
+  const stepsHTML = stepLabels.map((l,i) => {
+    const cls = i < ps.step ? 'done' : i === ps.step ? 'active' : '';
+    const icon = i < ps.step ? '✓' : i+1;
+    return `<div class="step ${cls}"><div class="step-dot">${icon}</div><div class="step-label">${l}</div></div>`;
+  }).join('');
+  return `
+    <div class="process-card">
+      <div class="process-header">
+        <div class="file-icon">🎙️</div>
+        <div class="file-info"><h4>${escHtml(ps.filename)}</h4><p>${escHtml(ps.langLabel)} • Sending audio to Gemini AI…</p></div>
+        <div class="spinner" style="margin-left:auto"></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(ps.progress,99)}%"></div></div>
+      <div class="progress-label"><span>${escHtml(ps.status)}</span><span>${Math.min(ps.progress,99)}%</span></div>
+      <div class="steps">${stepsHTML}</div>
+      <div class="waveform">
+        ${Array.from({length:22},(_,i)=>`<div class="wave-bar" style="height:${7+Math.random()*22}px;animation-delay:${i*0.055}s"></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderResults(r, filename) {
+  // escHtml all user-derived content so real speech can't break the DOM
+  const actions  = (r.actionItems||[]).map((a,i)=>`
+    <li class="action-item">
+      <div class="ai-check" id="chk${i}" onclick="this.textContent=this.textContent?'':'✓';this.classList.toggle('done')"></div>
+      <span>${escHtml(a)}</span>
+    </li>`).join('');
+  const keywords = (r.keywords||[]).map(k=>`<span class="keyword">${escHtml(k)}</span>`).join('');
+  const sentiment = (() => {
+    const s = r.sentiment;
+    if(!s) return '<div style="color:var(--muted);font-size:13px;font-weight:500">Not analysed</div>';
+    // Clamp values so bad JSON doesn't break the bar widths
+    const clamp = v => Math.min(100, Math.max(0, parseInt(v)||0));
+    return [{l:'Positive',v:clamp(s.positive),c:'#059669'},{l:'Neutral',v:clamp(s.neutral),c:'#2563eb'},{l:'Negative',v:clamp(s.negative),c:'#dc2626'}]
+      .map(b=>`<div class="sentiment-bar"><span class="sentiment-label">${b.l}</span><div class="sent-track"><div class="sent-fill" style="width:${b.v}%;background:${b.c}"></div></div><span class="sent-pct">${b.v}%</span></div>`).join('');
+  })();
+  const chapters = (r.chapters||[]).map(c=>`<div class="chapter"><span class="chapter-time">${escHtml(c.time)}</span><span class="chapter-text">${escHtml(c.text)}</span></div>`).join('');
+
+  // Transcript and summary: escape then restore newlines as <br> for readability
+  const transcriptHtml = (r.transcript||'No transcript available.')
+    .split('\n').map(escHtml).join('<br>');
+  const summaryHtml = (r.summary||'No summary available.')
+    .split('\n').map(escHtml).join('<br>');
+
+  return `
+    <div class="success-banner">
+      <span style="font-size:22px">✅</span>
+      <div class="info">
+        <div class="title">${escHtml(filename)} — Transcription Complete</div>
+        <div class="sub">Language: ${escHtml(r.lang||'—')} &nbsp;•&nbsp; ${escHtml(r.duration||'—')} &nbsp;•&nbsp; ${r.wordCount||0} words transcribed</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="saveAndView()">💾 Save &amp; View</button>
+    </div>
+    <div class="results-grid">
+      <div class="result-card full">
+        <h3>📝 Transcript
+          <button class="copy-btn" onclick="copyText('transcript')">Copy</button>
+          <span class="card-badge badge-gemini" style="margin-left:0">Gemini</span>
+        </h3>
+        <div class="transcript-text" id="transcript">${transcriptHtml}</div>
+      </div>
+      <div class="result-card full">
+        <h3>🤖 AI Summary <span class="card-badge badge-gemini">AI</span></h3>
+        <div class="summary-text">${summaryHtml}</div>
+      </div>
+      <div class="result-card">
+        <h3>✅ Action Items <span class="card-badge badge-success">${(r.actionItems||[]).length} items</span></h3>
+        <ul class="action-items">${actions||'<li class="action-item" style="color:var(--muted)">No action items found</li>'}</ul>
+      </div>
+      <div class="result-card">
+        <h3>🔑 Key Topics</h3>
+        <div class="keyword-list">${keywords||'<span style="color:var(--muted);font-size:13px">None detected</span>'}</div>
+        <div class="section-divider"></div>
+        <h3 style="margin-bottom:10px">😊 Sentiment Analysis</h3>
+        ${sentiment}
+      </div>
+      ${chapters ? `
+      <div class="result-card full">
+        <h3>📖 Chapters</h3>
+        ${chapters}
+      </div>` : ''}
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE: MEETINGS LIST
+// ══════════════════════════════════════
+function renderMeetings() {
+  const rows = meetings.length ?
+    meetings.map((m,i)=>`
+      <div class="meeting-row" onclick="viewMeeting(${i})">
+        <div class="meeting-thumb">🧠</div>
+        <div class="meeting-info">
+          <div class="meeting-title">${escHtml(m.title)}</div>
+          <div class="meeting-meta">
+            <span>📅 ${m.date}</span><span>⏱️ ${m.duration}</span>
+            <span>🌐 ${m.lang}</span><span>💬 ${m.wordCount||0} words</span>
+          </div>
+        </div>
+        <span class="status-chip status-done">✓ Done</span>
+        <div class="meeting-actions">
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();exportMeeting(${i})">⬇ Export</button>
+          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteMeeting(${i})">🗑</button>
+        </div>
+      </div>`).join('') :
+    `<div class="empty"><span class="empty-icon">🧠</span><div class="empty-title">No meeting notes yet</div><div class="empty-sub">Upload your first meeting recording to get started</div><br><button class="btn btn-primary" onclick="switchPage('upload')">🎙️ New Meeting</button></div>`;
+  return `
+    <div class="header">
+      <h2>📋 All Meeting Notes</h2>
+      <button class="btn btn-primary" onclick="switchPage('upload')">+ New Meeting</button>
+    </div>
+    <div class="content">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search meeting notes…" id="searchInput" oninput="filterMeetings(this.value)">
+      </div>
+      <div class="meetings-list" id="meetingsList">${rows}</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE: SMART SEARCH
+// ══════════════════════════════════════
+function renderSearch() {
+  return `
+    <div class="header">
+      <h2>🔍 Smart Search</h2>
+      <span class="card-badge badge-gemini" style="font-size:12px;padding:4px 12px">AI-powered</span>
+    </div>
+    <div class="content">
+      <div class="search-bar" style="margin-bottom:24px">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="smartSearch" placeholder="Search across all transcripts, summaries, action items…" style="font-size:14.5px">
+        <button class="btn btn-primary btn-sm" onclick="doSmartSearch()">Search →</button>
+      </div>
+      <div id="searchResults">
+        <div class="empty"><span class="empty-icon">🔎</span><div class="empty-title">Search your meeting notes</div><div class="empty-sub">Find anything across all your transcripts, summaries, and action items instantly</div></div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE: MEETING PLANNER (NEW)
+// ══════════════════════════════════════
+function renderPlanner() {
+  const tabs = `
+    <div class="tabs">
+      <div class="tab ${plannerTab==='create'?'active':''}" onclick="plannerTab='create';render()">➕ Create Meeting</div>
+      <div class="tab ${plannerTab==='list'?'active':''}" onclick="plannerTab='list';render()">📅 Planned Meetings (${plannedMeetings.length})</div>
+    </div>`;
+
+  if (plannerTab === 'create') {
+    const agendaRows = (window._agendaItems||['','']).map((v,i)=>`
+      <div class="agenda-item-row">
+        <div class="agenda-num">${i+1}</div>
+        <input class="agenda-input" id="agendaItem_${i}" placeholder="Agenda point ${i+1}…" value="${escHtml(v)}" oninput="window._agendaItems[${i}]=this.value">
+        <button class="agenda-rm" onclick="removeAgendaItem(${i})" title="Remove">×</button>
+      </div>`).join('');
+
+    const groupOptions = facultyGroups.map((g,i)=>`<option value="${i}">${escHtml(g.name)} (${g.members.length} members)</option>`).join('');
+
+    return `
+      <div class="header">
+        <h2>📅 Plan a Meeting</h2>
+        <span class="card-badge badge-violet" style="font-size:12px;padding:4px 12px">Agenda Builder</span>
+      </div>
+      <div class="content">
+        ${tabs}
+        <div class="planner-card">
+          <h3>📋 Meeting Details</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">MEETING TITLE *</label>
+              <input class="form-input" id="planTitle" placeholder="e.g. Department Review Q1" value="${escHtml(window._planTitle||'')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">DATE & TIME *</label>
+              <input class="form-input" type="datetime-local" id="planDateTime" value="${window._planDateTime||''}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">VENUE / PLATFORM</label>
+              <input class="form-input" id="planVenue" placeholder="e.g. Conference Room B / Google Meet" value="${escHtml(window._planVenue||'')}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">FACULTY GROUP (for email)</label>
+              <select class="form-input" id="planGroup">
+                <option value="">— No group selected —</option>
+                ${groupOptions}
+              </select>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <h3>📝 Agenda Points</h3>
+          <div class="agenda-list" id="agendaList">${agendaRows}</div>
+          <button class="btn btn-ghost btn-sm" onclick="addAgendaItem()" style="margin-bottom:14px">+ Add Point</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="savePlannedMeeting()">💾 Save Meeting Plan</button>
+            <button class="btn btn-violet" onclick="sendAgendaEmail()">📧 Send Agenda Email</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // LIST tab
+  if (!plannedMeetings.length) {
+    return `
+      <div class="header"><h2>📅 Plan a Meeting</h2></div>
+      <div class="content">
+        ${tabs}
+        <div class="empty"><span class="empty-icon">📅</span><div class="empty-title">No planned meetings</div><div class="empty-sub">Switch to "Create Meeting" to plan your first agenda</div></div>
+      </div>`;
+  }
+
+  const list = plannedMeetings.map((p,i)=>`
+    <div class="planned-meeting-row">
+      <div class="planned-header">
+        <div class="planned-icon">📅</div>
+        <div class="planned-info">
+          <div class="planned-title">${escHtml(p.title)}</div>
+          <div class="planned-meta">🗓 ${p.dateLabel} &nbsp;•&nbsp; 📍 ${escHtml(p.venue||'TBD')} &nbsp;•&nbsp; 👥 ${p.groupName||'No group'}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="resendPlanEmail(${i})">📧 Resend</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePlanned(${i})">🗑</button>
+        </div>
+      </div>
+      <div class="planned-agenda">
+        ${p.agendaItems.map((a,ai)=>`<div class="planned-agenda-item"><div class="planned-agenda-num">${ai+1}.</div><div>${escHtml(a)}</div></div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="header"><h2>📅 Plan a Meeting</h2><button class="btn btn-primary" onclick="plannerTab='create';window._planTitle='';window._planDateTime='';window._planVenue='';window._agendaItems=['',''];render()">+ New Plan</button></div>
+    <div class="content">
+      ${tabs}
+      <div class="planned-meetings-list">${list}</div>
+    </div>`;
+}
+
+// Planner helpers
+window._agendaItems = ['',''];
+window._planTitle   = '';
+window._planDateTime= '';
+window._planVenue   = '';
+
+function addAgendaItem() {
+  // Sync current values first
+  syncAgendaInputs();
+  window._agendaItems.push('');
+  render();
+}
+function removeAgendaItem(i) {
+  syncAgendaInputs();
+  window._agendaItems.splice(i,1);
+  if(!window._agendaItems.length) window._agendaItems.push('');
+  render();
+}
+function syncAgendaInputs() {
+  window._agendaItems = window._agendaItems.map((_,i)=>document.getElementById(`agendaItem_${i}`)?.value||'');
+  window._planTitle   = document.getElementById('planTitle')?.value    || '';
+  window._planDateTime= document.getElementById('planDateTime')?.value  || '';
+  window._planVenue   = document.getElementById('planVenue')?.value     || '';
+}
+
+function savePlannedMeeting() {
+  syncAgendaInputs();
+  const title = window._planTitle.trim();
+  const dt    = window._planDateTime;
+  if(!title) { showNotify('⚠️ Please enter a meeting title','error'); return; }
+  if(!dt)    { showNotify('⚠️ Please choose a date and time','error'); return; }
+
+  const groupIdx = parseInt(document.getElementById('planGroup')?.value);
+  const group    = isNaN(groupIdx) || groupIdx==='' ? null : facultyGroups[groupIdx];
+
+  const dateLabel = new Date(dt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const items     = window._agendaItems.filter(a=>a.trim());
+
+  plannedMeetings.unshift({
+    title, dt, dateLabel,
+    venue:     window._planVenue.trim(),
+    groupName: group ? group.name : null,
+    groupEmails: group ? group.members.map(m=>m.email).filter(Boolean) : [],
+    agendaItems: items,
+    createdAt: Date.now()
+  });
+  savePlanned();
+  window._planTitle=''; window._planDateTime=''; window._planVenue=''; window._agendaItems=['',''];
+  plannerTab='list';
+  showNotify('✅ Meeting plan saved!','success');
+  render();
+}
+
+function buildAgendaEmailBody(plan) {
+  const lines = [
+    `Dear Faculty Members,`,``,
+    `You are invited to the following meeting:`,``,
+    `📋 MEETING: ${plan.title}`,
+    `🗓  DATE & TIME: ${plan.dateLabel}`,
+    `📍 VENUE: ${plan.venue||'To Be Announced'}`,``,
+    `── AGENDA ──────────────────────────────`,
+    ...plan.agendaItems.map((a,i)=>`  ${i+1}. ${a}`),``,
+    `Please come prepared. Reply to this email for any queries.`,``,
+    `Regards,`,`Shiva`,`SHIVA's MindNote — Faculty Edition`
+  ];
+  return encodeURIComponent(lines.join('\n'));
+}
+
+function sendAgendaEmail() {
+  syncAgendaInputs();
+  const title  = window._planTitle.trim();
+  const dt     = window._planDateTime;
+  if(!title) { showNotify('⚠️ Enter meeting title first','error'); return; }
+  if(!dt)    { showNotify('⚠️ Choose a date and time first','error'); return; }
+
+  const groupIdx   = parseInt(document.getElementById('planGroup')?.value);
+  const group      = isNaN(groupIdx) || document.getElementById('planGroup')?.value==='' ? null : facultyGroups[groupIdx];
+  const emails     = group ? group.members.map(m=>m.email).filter(Boolean) : [];
+  const toStr      = emails.join(',');
+  const items      = window._agendaItems.filter(a=>a.trim());
+  const dateLabel  = dt ? new Date(dt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+
+  const fakePlan = { title, dateLabel, venue: window._planVenue.trim(), agendaItems: items };
+  const body     = buildAgendaEmailBody(fakePlan);
+  const subject  = encodeURIComponent(`[Meeting Agenda] ${title} — ${dateLabel}`);
+  window.location.href = `mailto:${toStr}?subject=${subject}&body=${body}`;
+}
+
+function resendPlanEmail(i) {
+  const plan    = plannedMeetings[i];
+  const toStr   = plan.groupEmails.join(',');
+  const subject = encodeURIComponent(`[Meeting Agenda] ${plan.title} — ${plan.dateLabel}`);
+  const body    = buildAgendaEmailBody(plan);
+  window.location.href = `mailto:${toStr}?subject=${subject}&body=${body}`;
+}
+
+function deletePlanned(i) {
+  if(confirm('Delete this meeting plan?')) {
+    plannedMeetings.splice(i,1); savePlanned(); render();
+    showNotify('🗑 Meeting plan deleted','success');
+  }
+}
+
+// ══════════════════════════════════════
+// PAGE: FACULTY DIRECTORY (NEW)
+// ══════════════════════════════════════
+function renderFaculty() {
+  const tabs = `
+    <div class="tabs">
+      <div class="tab ${facultyTab==='list'?'active':''}" onclick="facultyTab='list';render()">👥 Groups (${facultyGroups.length})</div>
+      <div class="tab ${facultyTab==='add'?'active':''}" onclick="facultyTab='add';render()">➕ Add / Import</div>
+    </div>`;
+
+  if (facultyTab === 'add') {
+    return `
+      <div class="header">
+        <h2>👥 Faculty Directory</h2>
+        <span class="card-badge badge-success" style="font-size:12px;padding:4px 12px">Team Management</span>
+      </div>
+      <div class="content">
+        ${tabs}
+        <div class="planner-card">
+          <h3>🏷️ Create New Group</h3>
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label">GROUP NAME *</label>
+              <input class="form-input" id="grpName" placeholder="e.g. Computer Science Dept.">
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <h3 style="margin-bottom:10px">👤 Add Faculty Members</h3>
+          <div id="facultyMembersList">
+            ${renderFacultyMemberInputs()}
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="addFacultyMemberRow()" style="margin-bottom:14px">+ Add Member</button>
+          <div class="section-divider"></div>
+          <h3 style="margin-bottom:10px">📋 Bulk Import (CSV)</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:500">Paste CSV with columns: <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:11px">Name, Email, Designation</code></p>
+          <textarea class="form-input" id="csvImport" rows="4" placeholder="Prof. Sharma, sharma@college.edu, HOD\nDr. Patel, patel@college.edu, Asst. Professor" style="resize:vertical;font-size:12px;font-family:monospace"></textarea>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="saveGroup()">💾 Save Group</button>
+            <button class="btn btn-ghost" onclick="importCSV()">📤 Import CSV</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // LIST tab
+  if (!facultyGroups.length) {
+    return `
+      <div class="header"><h2>👥 Faculty Directory</h2></div>
+      <div class="content">
+        ${tabs}
+        <div class="empty"><span class="empty-icon">👥</span><div class="empty-title">No faculty groups yet</div><div class="empty-sub">Add your first group to manage faculty members and share agendas easily</div></div>
+      </div>`;
+  }
+
+  const groups = facultyGroups.map((g,gi)=>`
+    <div class="planner-card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:var(--text)">${escHtml(g.name)}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${g.members.length} member${g.members.length!==1?'s':''} &nbsp;•&nbsp; Created ${g.createdAt ? new Date(g.createdAt).toLocaleDateString('en-IN') : ''}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="emailGroup(${gi})">📧 Email All</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteGroup(${gi})">🗑</button>
+      </div>
+      <div class="faculty-grid">
+        ${g.members.map((m,mi)=>`
+          <div class="faculty-card">
+            <div class="faculty-avatar" style="background:${AVATAR_COLORS[(mi)%AVATAR_COLORS.length]}">${getInitials(m.name)}</div>
+            <div class="faculty-info">
+              <div class="faculty-name">${escHtml(m.name||'—')}</div>
+              <div class="faculty-desig">${escHtml(m.designation||'Faculty')}</div>
+              <div class="faculty-email">${escHtml(m.email||'—')}</div>
+            </div>
+            <button class="faculty-remove" onclick="removeMember(${gi},${mi})" title="Remove">×</button>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="header">
+      <h2>👥 Faculty Directory</h2>
+      <button class="btn btn-primary" onclick="facultyTab='add';render()">+ New Group</button>
+    </div>
+    <div class="content">
+      ${tabs}
+      ${groups}
+    </div>`;
+}
+
+window._facultyMembers = [{name:'',email:'',designation:''}];
+function renderFacultyMemberInputs() {
+  return (window._facultyMembers||[{name:'',email:'',designation:''}]).map((m,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:end" id="fmRow_${i}">
+      <div><label class="form-label">NAME</label><input class="form-input" id="fm_name_${i}" placeholder="Dr. Sharma" value="${escHtml(m.name)}" oninput="window._facultyMembers[${i}].name=this.value"></div>
+      <div><label class="form-label">EMAIL</label><input class="form-input" type="email" id="fm_email_${i}" placeholder="sharma@college.edu" value="${escHtml(m.email)}" oninput="window._facultyMembers[${i}].email=this.value"></div>
+      <div><label class="form-label">DESIGNATION</label><input class="form-input" id="fm_desig_${i}" placeholder="Asst. Professor" value="${escHtml(m.designation)}" oninput="window._facultyMembers[${i}].designation=this.value"></div>
+      <button class="agenda-rm" style="margin-bottom:2px" onclick="removeFacultyMemberRow(${i})">×</button>
+    </div>`).join('');
+}
+function addFacultyMemberRow() {
+  window._facultyMembers = window._facultyMembers||[];
+  window._facultyMembers.push({name:'',email:'',designation:''});
+  const container = document.getElementById('facultyMembersList');
+  if(container) container.innerHTML = renderFacultyMemberInputs();
+}
+function removeFacultyMemberRow(i) {
+  window._facultyMembers = window._facultyMembers||[];
+  window._facultyMembers.splice(i,1);
+  if(!window._facultyMembers.length) window._facultyMembers.push({name:'',email:'',designation:''});
+  const container = document.getElementById('facultyMembersList');
+  if(container) container.innerHTML = renderFacultyMemberInputs();
+}
+function importCSV() {
+  const raw = document.getElementById('csvImport')?.value.trim();
+  if(!raw) return;
+  const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  const parsed = lines.map(l=>{
+    const parts = l.split(',').map(p=>p.trim());
+    return {name:parts[0]||'', email:parts[1]||'', designation:parts[2]||''};
+  }).filter(m=>m.name||m.email);
+  window._facultyMembers = [...(window._facultyMembers||[]), ...parsed];
+  const container = document.getElementById('facultyMembersList');
+  if(container) container.innerHTML = renderFacultyMemberInputs();
+  showNotify(`✅ Imported ${parsed.length} member(s)`,'success');
+}
+function saveGroup() {
+  const name = document.getElementById('grpName')?.value.trim();
+  if(!name) { showNotify('⚠️ Enter a group name','error'); return; }
+  const members = (window._facultyMembers||[]).filter(m=>m.name||m.email);
+  if(!members.length) { showNotify('⚠️ Add at least one member','error'); return; }
+  facultyGroups.unshift({name, members, createdAt:Date.now()});
+  saveFaculty();
+  window._facultyMembers = [{name:'',email:'',designation:''}];
+  facultyTab = 'list';
+  showNotify(`✅ Group "${name}" saved with ${members.length} member(s)`,'success');
+  render();
+}
+function deleteGroup(i) {
+  if(confirm(`Delete group "${facultyGroups[i].name}"?`)) {
+    facultyGroups.splice(i,1); saveFaculty(); render();
+    showNotify('🗑 Group deleted','success');
+  }
+}
+function removeMember(gi,mi) {
+  facultyGroups[gi].members.splice(mi,1); saveFaculty(); render();
+  showNotify('🗑 Member removed','success');
+}
+function emailGroup(gi) {
+  const g   = facultyGroups[gi];
+  const to  = g.members.map(m=>m.email).filter(Boolean).join(',');
+  const sub = encodeURIComponent(`[SHIVA MindNote] Message for ${g.name}`);
+  window.location.href = `mailto:${to}?subject=${sub}`;
+}
+function getInitials(name) {
+  if(!name) return '?';
+  return name.trim().split(/\s+/).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+}
+
+// ══════════════════════════════════════
+// PAGE: FILE VAULT (NEW)
+// ══════════════════════════════════════
+function renderVault() {
+  const tabs = `
+    <div class="tabs">
+      <div class="tab ${vaultTab==='browse'?'active':''}" onclick="vaultTab='browse';render()">🗄️ Browse Files (${vaultFiles.length})</div>
+      <div class="tab ${vaultTab==='upload'?'active':''}" onclick="vaultTab='upload';render()">📁 Upload Document</div>
+    </div>`;
+
+  if (vaultTab === 'upload') {
+    const meetingOpts = [
+      ...plannedMeetings.map((p,i)=>`<option value="planned_${i}">[Planned] ${escHtml(p.title)}</option>`),
+      ...meetings.map((m,i)=>`<option value="recorded_${i}">[Recorded] ${escHtml(m.title)}</option>`)
+    ].join('');
+
+    return `
+      <div class="header">
+        <h2>🗄️ File Vault</h2>
+        <span class="card-badge badge-amber" style="font-size:12px;padding:4px 12px">Document Store</span>
+      </div>
+      <div class="content">
+        ${tabs}
+        <div class="planner-card">
+          <h3>📂 Upload Meeting Document</h3>
+          <div class="form-row">
+            <div class="form-group full">
+              <label class="form-label">ASSOCIATE WITH MEETING</label>
+              <select class="form-input" id="vaultMeetingRef">
+                <option value="">— General / Unassigned —</option>
+                ${meetingOpts}
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">AGENDA ITEM (optional)</label>
+              <input class="form-input" id="vaultAgendaTag" placeholder="e.g. Agenda 3 – Budget Review">
+            </div>
+          </div>
+          <div class="vault-drop" id="vaultDropZone" onclick="document.getElementById('vaultFileInput').click()">
+            <p>🗂️ Drop PDF, PPT, Image, or DOC here</p>
+            <span>Supported: PDF · PPT/PPTX · PNG/JPG/GIF · DOC/DOCX</span>
+          </div>
+          <input type="file" id="vaultFileInput" style="display:none" accept=".pdf,.ppt,.pptx,.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx" multiple>
+          <p style="font-size:11px;color:var(--muted);font-weight:500">Files are stored locally in your browser (Base64). Large files may impact performance.</p>
+        </div>
+      </div>`;
+  }
+
+  // BROWSE tab
+  if (!vaultFiles.length) {
+    return `
+      <div class="header"><h2>🗄️ File Vault</h2><button class="btn btn-primary" onclick="vaultTab='upload';render()">+ Upload</button></div>
+      <div class="content">
+        ${tabs}
+        <div class="empty"><span class="empty-icon">🗄️</span><div class="empty-title">Vault is empty</div><div class="empty-sub">Upload PDFs, presentations, and images to keep them accessible during meetings</div></div>
+      </div>`;
+  }
+
+  // Group files by meeting ref
+  const grouped = {};
+  vaultFiles.forEach((f,i)=>{
+    const key = f.meetingLabel || 'General';
+    if(!grouped[key]) grouped[key]=[];
+    grouped[key].push({...f,_idx:i});
+  });
+
+  const groupedHTML = Object.entries(grouped).map(([label, files])=>`
+    <div class="vault-meeting-card">
+      <div class="vault-meeting-header">
+        <div class="meeting-thumb" style="width:36px;height:36px;font-size:16px">🗂️</div>
+        <div>
+          <div class="vault-meeting-title">${escHtml(label)}</div>
+          <div class="vault-meeting-meta">${files.length} document${files.length!==1?'s':''}</div>
+        </div>
+      </div>
+      <div class="vault-files">
+        ${files.map(f=>`
+          <div class="vault-file-row">
+            <div class="vault-file-icon ${getFileClass(f.type)}">${getFileEmoji(f.type)}</div>
+            <div style="flex:1;min-width:0">
+              <div class="vault-file-name">${escHtml(f.name)}</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px">${f.sizeLabel||''}</div>
+            </div>
+            ${f.agendaTag?`<span class="vault-file-agenda">${escHtml(f.agendaTag)}</span>`:''}
+            <button class="btn btn-ghost btn-sm" onclick="openVaultFile(${f._idx})">👁 View</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteVaultFile(${f._idx})">🗑</button>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="header">
+      <h2>🗄️ File Vault</h2>
+      <button class="btn btn-primary" onclick="vaultTab='upload';render()">+ Upload</button>
+    </div>
+    <div class="content">
+      ${tabs}
+      ${groupedHTML}
+    </div>`;
+}
+
+function getFileClass(type) {
+  if(!type) return 'doc';
+  if(type.includes('pdf'))  return 'pdf';
+  if(type.includes('ppt'))  return 'ppt';
+  if(type.includes('image'))return 'img';
+  return 'doc';
+}
+function getFileEmoji(type) {
+  if(!type) return '📄';
+  if(type.includes('pdf'))  return '📕';
+  if(type.includes('ppt'))  return '📊';
+  if(type.includes('image'))return '🖼️';
+  return '📄';
+}
+
+function openVaultFile(i) {
+  const f = vaultFiles[i];
+  if(!f||!f.dataUrl) { showNotify('⚠️ File data not available','error'); return; }
+  const win = window.open('','_blank');
+  if(f.type && f.type.includes('image')) {
+    win.document.write(`<html><body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="${f.dataUrl}" style="max-width:100%;max-height:100vh;object-fit:contain"></body></html>`);
+  } else {
+    win.document.write(`<html><head><title>${escHtml(f.name)}</title></head><body style="margin:0"><iframe src="${f.dataUrl}" style="width:100vw;height:100vh;border:none"></iframe></body></html>`);
+  }
+}
+
+function deleteVaultFile(i) {
+  if(confirm(`Delete "${vaultFiles[i].name}"?`)) {
+    vaultFiles.splice(i,1); saveVault(); render();
+    showNotify('🗑 File removed from vault','success');
+  }
+}
+
+function handleVaultUpload(files, meetingRef, agendaTag) {
+  let loaded = 0;
+  Array.from(files).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const sizeKB = file.size/1024;
+      const sizeLabel = sizeKB > 1024 ? `${(sizeKB/1024).toFixed(1)} MB` : `${sizeKB.toFixed(0)} KB`;
+      vaultFiles.push({
+        name:         file.name,
+        type:         file.type,
+        sizeLabel,
+        dataUrl:      e.target.result,
+        meetingRef:   meetingRef || '',
+        meetingLabel: resolveMeetingLabel(meetingRef),
+        agendaTag:    agendaTag || '',
+        uploadedAt:   Date.now()
+      });
+      loaded++;
+      if(loaded === files.length) {
+        saveVault();
+        vaultTab='browse';
+        showNotify(`✅ ${loaded} file(s) added to vault`,'success');
+        render();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function resolveMeetingLabel(ref) {
+  if(!ref) return 'General';
+  if(ref.startsWith('planned_')) { const i=parseInt(ref.split('_')[1]); return plannedMeetings[i]?.title||'Planned Meeting'; }
+  if(ref.startsWith('recorded_')){ const i=parseInt(ref.split('_')[1]); return meetings[i]?.title||'Recorded Meeting'; }
+  return 'General';
+}
+
+// ══════════════════════════════════════
+// PAGE: ANALYTICS
+// ══════════════════════════════════════
+function renderAnalytics() {
+  const total        = meetings.length;
+  const totalWords   = meetings.reduce((s,m)=>s+(m.wordCount||0),0);
+  const totalActions = meetings.reduce((s,m)=>s+(m.actionItems||[]).length,0);
+  const avgDuration  = total ? '~38 min' : '—';
+  return `
+    <div class="header"><h2>📊 Analytics</h2></div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">🧠</div><div class="stat-val">${total}</div><div class="stat-label">Meetings Recorded</div></div>
+        <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-val">${(totalWords/1000).toFixed(1)}K</div><div class="stat-label">Words Transcribed</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val">${totalActions}</div><div class="stat-label">Action Items</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-val">${avgDuration}</div><div class="stat-label">Avg Duration</div></div>
+      </div>
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val">${plannedMeetings.length}</div><div class="stat-label">Planned Meetings</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val">${facultyGroups.reduce((s,g)=>s+g.members.length,0)}</div><div class="stat-label">Faculty Members</div></div>
+        <div class="stat-card"><div class="stat-icon">🗄️</div><div class="stat-val">${vaultFiles.length}</div><div class="stat-label">Vault Files</div></div>
+      </div>
+      ${total===0 ? `<div class="empty"><span class="empty-icon">📊</span><div class="empty-title">No data yet</div><div class="empty-sub">Analytics will appear after your first meeting note</div></div>` : ''}
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE: ACTION ITEMS
+// ══════════════════════════════════════
+function renderActions() {
+  const all = meetings.flatMap((m,mi)=>(m.actionItems||[]).map((a,ai)=>({text:a,meeting:m.title,mi,ai})));
+  return `
+    <div class="header">
+      <h2>✅ Action Items</h2>
+      <span style="color:var(--muted);font-size:13px;font-weight:500">${all.length} total</span>
+    </div>
+    <div class="content">
+      ${all.length===0 ? `<div class="empty"><span class="empty-icon">✅</span><div class="empty-title">No action items</div><div class="empty-sub">Extracted action items from your meetings will appear here</div></div>` :
+      `<div class="result-card" style="max-width:700px">
+        <ul class="action-items">${all.map(a=>`
+          <li class="action-item">
+            <div class="ai-check" onclick="this.textContent=this.textContent?'':'✓';this.classList.toggle('done')"></div>
+            <div>
+              <div style="font-size:13px;color:var(--text2)">${escHtml(a.text)}</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-weight:500">From: ${escHtml(a.meeting)}</div>
+            </div>
+          </li>`).join('')}</ul>
+       </div>`}
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE: SETTINGS
+// ══════════════════════════════════════
+function renderSettings() {
+  const savedKey = localStorage.getItem('mindnote_apikey') || '';
+  return `
+    <div class="header"><h2>⚙️ Settings</h2></div>
+    <div class="content">
+      <div class="settings-card">
+        <h3>🔑 Gemini API Key</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:500">
+          Get your free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>
+        </p>
+        <input type="password" class="settings-input" id="apiKeyInput" value="${savedKey}" placeholder="AIza…">
+        <button class="btn btn-primary btn-sm" onclick="saveApiKey()">💾 Save Key</button>
+      </div>
+      <div class="settings-card">
+        <h3>🌐 Default Language</h3>
+        <select class="lang-select" style="width:100%;margin-top:4px">
+          ${LANGS.map(l=>`<option value="${l.code}" ${l.code===selectedLang?'selected':''}>${l.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="settings-card">
+        <h3>🤖 AI Features</h3>
+        <div class="feature-row">
+          ${['Auto-transcription','Smart summarisation','Action item extraction','Sentiment analysis','Chapter detection','Keyword extraction','Multi-speaker detection'].map(f=>`
+            <label class="feature-item"><input type="checkbox" checked> ${f}</label>`).join('')}
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3>🗑️ Data Management</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="exportAllData()">⬇ Export All Data</button>
+          <button class="btn btn-danger btn-sm" onclick="clearAllData()">⚠️ Clear All Data</button>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;font-weight:500">All data is stored locally in your browser's localStorage. No server involved.</p>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PAGE: DETAIL VIEW (with Presentation Mode)
+// ══════════════════════════════════════
+function renderDetail() {
+  const m = meetings[window._viewIdx];
+  if(!m) { switchPage('meetings'); return ''; }
+
+  const meetingFiles = vaultFiles.filter(f=>f.meetingRef===`recorded_${window._viewIdx}`||f.meetingLabel===m.title);
+
+  if(presMode && meetingFiles.length) {
+    return renderPresMode(m, meetingFiles);
+  }
+
+  return `
+    <div class="header">
+      <button class="btn btn-ghost btn-sm" onclick="switchPage('meetings')">← Back</button>
+      <div style="flex:1;min-width:0">
+        <h2 style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(m.title)}</h2>
+      </div>
+      ${meetingFiles.length ? `<button class="btn btn-violet btn-sm" onclick="presMode=true;render()">🖥 Presentation Mode</button>` : ''}
+      <button class="btn btn-ghost btn-sm" onclick="exportMeeting(${window._viewIdx})">⬇ Export</button>
+    </div>
+    <div class="content">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap;font-weight:500">
+        <span>📅 ${m.date}</span><span>⏱️ ${m.duration}</span><span>🌐 ${m.lang}</span><span>💬 ${m.wordCount||0} words</span>
+        ${meetingFiles.length ? `<span style="color:var(--violet)">🗄️ ${meetingFiles.length} vault file(s)</span>` : ''}
+      </div>
+      ${meetingFiles.length ? `
+        <div class="result-card" style="margin-bottom:16px">
+          <h3>🗄️ Meeting Documents <span class="card-badge badge-amber">${meetingFiles.length} files</span></h3>
+          <div class="vault-files">
+            ${meetingFiles.map((f,fi)=>`
+              <div class="vault-file-row">
+                <div class="vault-file-icon ${getFileClass(f.type)}">${getFileEmoji(f.type)}</div>
+                <div style="flex:1;min-width:0"><div class="vault-file-name">${escHtml(f.name)}</div>${f.agendaTag?`<div style="font-size:11px;color:var(--accent);margin-top:2px">${escHtml(f.agendaTag)}</div>`:''}</div>
+                <button class="btn btn-ghost btn-sm" onclick="openVaultFile(${vaultFiles.indexOf(f)})">👁 View</button>
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
+      ${renderResults(m, m.title)}
+    </div>`;
+}
+
+function renderPresMode(m, files) {
+  const fileListHTML = files.map((f,i)=>`
+    <div class="pres-file-item ${activeVaultFile===i?'active':''}" onclick="activeVaultFile=${i};render()">
+      <span style="font-size:16px">${getFileEmoji(f.type)}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(f.name)}</div>
+        ${f.agendaTag?`<div style="font-size:10px;color:var(--accent);font-weight:600">${escHtml(f.agendaTag)}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  const viewerContent = activeVaultFile!==null && files[activeVaultFile] ? (() => {
+    const f = files[activeVaultFile];
+    if(f.type && f.type.includes('image')) {
+      return `<img src="${f.dataUrl}" class="pres-img-viewer" alt="${escHtml(f.name)}">`;
+    }
+    return `<iframe src="${f.dataUrl}" class="pres-viewer" title="${escHtml(f.name)}"></iframe>`;
+  })() : `<div class="pres-placeholder"><span>👆</span><p>Select a document to view it here</p></div>`;
+
+  const transcript = m.transcript || 'No transcript available.';
+
+  return `
+    <div class="header" style="padding:10px 20px">
+      <button class="btn btn-ghost btn-sm" onclick="presMode=false;activeVaultFile=null;render()">✕ Exit Presentation</button>
+      <h2 style="font-size:15px;flex:1;text-align:center">${escHtml(m.title)}</h2>
+      <span class="card-badge badge-violet" style="font-size:12px;padding:4px 12px">🖥 Presentation Mode</span>
+    </div>
+    <div style="padding:16px;height:calc(100vh - 61px);overflow:hidden">
+      <div class="pres-layout">
+        <!-- Left: Document Viewer -->
+        <div class="pres-panel">
+          <div class="pres-panel-header">
+            📂 Meeting Documents
+            <span class="card-badge badge-amber" style="margin-left:auto">${files.length} files</span>
+          </div>
+          <div style="padding:12px;border-bottom:1px solid var(--border)">
+            <div class="pres-file-list">${fileListHTML}</div>
+          </div>
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+            ${viewerContent}
+          </div>
+        </div>
+        <!-- Right: Transcript -->
+        <div class="pres-panel">
+          <div class="pres-panel-header">📝 Transcript & Notes</div>
+          <div class="pres-panel-body">
+            <div style="font-size:13px;line-height:1.9;color:var(--text2);white-space:pre-wrap">${transcript}</div>
+            <div class="section-divider"></div>
+            <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:10px">✅ Action Items</div>
+            <ul class="action-items">
+              ${(m.actionItems||[]).map(a=>`<li class="action-item">
+                <div class="ai-check" onclick="this.textContent=this.textContent?'':'✓';this.classList.toggle('done')"></div>
+                <span>${escHtml(a)}</span>
+              </li>`).join('')||'<li class="action-item" style="color:var(--muted)">No action items</li>'}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════
+// PROCESS FILE
+// ══════════════════════════════════════
+async function processFile(file) {
+  const langObj = LANGS.find(l=>l.code===selectedLang) || LANGS[0];
+  processingState = {
+    filename: file.name, langLabel: langObj.label,
+    step: 0, progress: 0, status: 'Reading audio file…',
+    result: null, error: null
+  };
+  render();
+  const steps = [
+    {step:1, progress:15, status:'Uploading audio to Gemini…',             delay:500},
+    {step:2, progress:40, status:'Transcribing speech…',                   delay:600},
+    {step:3, progress:70, status:'Analysing content & extracting insights…',delay:500},
+    {step:4, progress:90, status:'Generating summary…',                    delay:400},
+  ];
+  for(const s of steps) { await delay(s.delay); processingState={...processingState,...s}; render(); }
+  try {
+    const result = await callGemini(file, langObj);
+    processingState = {...processingState, step:5, progress:100, status:'Complete!', result, error:null};
+    render();
+    showNotify('✅ Transcription complete!', 'success');
+  } catch(err) {
+    processingState = {...processingState, step:5, progress:100, status:'Failed', result:null, error:err.message};
+    render();
+    showNotify('❌ ' + err.message, 'error');
+  }
+}
+
+// ══════════════════════════════════════
+// GEMINI API CALL  (Multimodal — real audio transcription)
+// ══════════════════════════════════════
+const GEMINI_MODELS = ['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.0-flash-lite'];
+
+// Convert a File object → { base64, mimeType }
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = e => {
+      // e.target.result is "data:<mime>;base64,<data>"
+      const [header, data] = e.target.result.split(',');
+      const mimeType = header.replace('data:','').replace(';base64','');
+      resolve({ base64: data, mimeType: mimeType || file.type });
+    };
+    reader.onerror = () => reject(new Error('Could not read audio file.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function callGemini(file, langObj) {
+  const key = getKey();
+  if(!key || key === 'YOUR_GEMINI_API_KEY')
+    throw new Error('Please set your Gemini API key in Settings');
+
+  // ── 1. Read file as Base64 for multimodal inline_data ──
+  if(processingState) { processingState.status = 'Reading audio file…'; render(); }
+  const { base64, mimeType } = await fileToBase64(file);
+
+  // ── 2. Build strict transcription prompt (no hallucination) ──
+  const langHint = langObj.code === 'auto'
+    ? 'Auto-detect the spoken language from the audio and set "lang" accordingly.'
+    : `The meeting language is ${langObj.label}. Set "lang" to "${langObj.label}".`;
+
+  const prompt = `You are a professional meeting transcription assistant.
+You have been given an audio recording. Your ONLY job is to ACCURATELY TRANSCRIBE what is spoken in the audio.
+
+STRICT RULES:
+- Do NOT invent, fabricate, or hallucinate any dialogue, names, or content.
+- Do NOT generate a "sample" or "example" transcript.
+- Transcribe ONLY what you actually hear in the provided audio.
+- If the audio is silent, corrupted, too short, or you genuinely cannot process it, return {"error": "Could not transcribe: <reason>"} and nothing else.
+- ${langHint}
+
+Return ONLY a valid JSON object — no markdown fences, no preamble, no text outside the JSON.
+
+JSON structure (all fields required):
+{
+  "title": "Concise title derived from the actual meeting content (5–8 words)",
+  "duration": "Estimated audio duration, e.g. 12 min",
+  "lang": "Detected or specified language name",
+  "wordCount": <integer count of words in the transcript>,
+  "transcript": "Verbatim transcript of the audio. Use speaker labels like [Speaker 1]: when speakers are distinguishable. Preserve natural speech, including pauses marked as [...] if notable.",
+  "summary": "3–4 paragraph executive summary based strictly on the transcript content.",
+  "actionItems": ["Each item is a verbatim or paraphrased commitment/task mentioned in the meeting"],
+  "keywords": ["key","topic","words","from","actual","audio","content"],
+  "sentiment": {"positive": <0-100>, "neutral": <0-100>, "negative": <0-100>},
+  "chapters": [{"time": "0:00", "text": "Topic heading derived from audio content"}]
+}`;
+
+  // ── 3. Build multimodal request body with inline_data ──
+  const buildBody = () => JSON.stringify({
+    contents: [{
+      parts: [
+        {
+          inline_data: {
+            mime_type: mimeType,
+            data:      base64          // raw Base64, no data-URI prefix
+          }
+        },
+        { text: prompt }
+      ]
+    }],
+    generationConfig: {
+      temperature:     0.1,            // low temperature = faithful transcription
+      maxOutputTokens: 8192,
+      responseMimeType:'application/json'
+    }
+  });
+
+  // ── 4. Try each model with retries ──
+  let lastError = '';
+  for(const model of GEMINI_MODELS) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+    for(let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        if(processingState) {
+          const modelLabel = model === GEMINI_MODELS[0] ? model : `fallback: ${model}`;
+          processingState.status = attempt > 1
+            ? `Retrying (${modelLabel})… attempt ${attempt}/3`
+            : `Transcribing with ${modelLabel}…`;
+          render();
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    buildBody()
+        });
+
+        if(res.status === 503 || res.status === 429) {
+          const waitSec = attempt===1 ? 5 : attempt===2 ? 12 : 25;
+          if(processingState) { processingState.status=`Server busy — retrying in ${waitSec}s…`; render(); }
+          await delay(waitSec * 1000);
+          lastError = `HTTP ${res.status}`;
+          continue;
+        }
+
+        if(!res.ok) {
+          let detail = '';
+          try { const e = await res.json(); detail = e.error?.message || ''; } catch(_) {}
+          lastError = `Gemini API error ${res.status}${detail ? ': ' + detail : ''}`;
+          break; // no point retrying a hard error on this model
+        }
+
+        const data = await res.json();
+
+        // Check for safety/finish-reason blocks
+        const candidate = data?.candidates?.[0];
+        const finishReason = candidate?.finishReason;
+        if(finishReason && finishReason !== 'STOP' && finishReason !== 'MAX_TOKENS') {
+          lastError = `Gemini blocked response (reason: ${finishReason})`;
+          break;
+        }
+
+        const raw = candidate?.content?.parts?.[0]?.text || '';
+        if(!raw) { lastError = 'Empty response from Gemini.'; continue; }
+
+        // Strip any accidental markdown fences
+        const clean = raw.trim()
+          .replace(/^```json\s*/i, '')
+          .replace(/^```\s*/,      '')
+          .replace(/\s*```$/,      '')
+          .trim();
+
+        let parsed;
+        try {
+          parsed = JSON.parse(clean);
+        } catch(_) {
+          const match = clean.match(/\{[\s\S]*\}/);
+          if(match) {
+            try { parsed = JSON.parse(match[0]); } catch(_) {}
+          }
+        }
+
+        if(!parsed) { lastError = 'Could not parse Gemini JSON response.'; continue; }
+
+        // ── 5. Guard against error responses from the model ──
+        if(parsed.error) {
+          throw new Error(`Transcription failed: ${parsed.error}`);
+        }
+
+        // ── 6. Guard against hallucination: reject suspiciously generic titles ──
+        const HALLUCINATION_MARKERS = [
+          'project nexus','sample transcript','example meeting',
+          'fictional','placeholder','demo meeting','test meeting'
+        ];
+        const titleLower = (parsed.title || '').toLowerCase();
+        if(HALLUCINATION_MARKERS.some(m => titleLower.includes(m))) {
+          throw new Error(
+            'Transcription failed: the model returned a placeholder response instead of transcribing the actual audio. ' +
+            'Please ensure the audio file is a valid, non-empty recording and try again.'
+          );
+        }
+
+        // ── 7. Validate mandatory fields ──
+        if(!parsed.transcript || parsed.transcript.trim().length < 20) {
+          lastError = 'Transcript returned was empty or too short.'; continue;
+        }
+
+        return parsed; // ✅ success
+
+      } catch(thrown) {
+        // Re-throw errors we deliberately raised (hallucination guard, model error)
+        if(thrown.message.startsWith('Transcription failed')) throw thrown;
+        lastError = 'Network error: ' + thrown.message;
+        await delay(3000);
+      }
+    }
+  }
+
+  throw new Error(`All Gemini models failed to transcribe the audio. Last error — ${lastError}`);
+}
+
+// ══════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════
+function saveAndView() {
+  if(!processingState?.result) return;
+  const r = processingState.result;
+  meetings.unshift({
+    title:    r.title || processingState.filename.replace(/\.[^.]+$/,''),
+    date:     new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),
+    duration: r.duration || 'Unknown',
+    lang:     r.lang || processingState.langLabel,
+    wordCount:r.wordCount || 0,
+    ...r
+  });
+  saveMeetings();
+  processingState  = null;
+  window._viewIdx  = 0;
+  presMode         = false;
+  activeVaultFile  = null;
+  switchPage('detail');
+}
+
+function viewMeeting(i) { window._viewIdx=i; presMode=false; activeVaultFile=null; switchPage('detail'); }
+
+function deleteMeeting(i) {
+  if(confirm('Delete this meeting note?')) {
+    meetings.splice(i,1); saveMeetings(); render();
+    showNotify('🗑 Meeting note deleted','success');
+  }
+}
+
+function exportMeeting(i) {
+  const m  = meetings[i];
+  const ai = m.actionItems || [];
+  const txt = [
+    `MEETING NOTE: ${m.title}`,
+    `Date: ${m.date}  |  Duration: ${m.duration}  |  Language: ${m.lang}  |  Words: ${m.wordCount||0}`,
+    '','═══ TRANSCRIPT ═══','', m.transcript||'',
+    '','═══ SUMMARY ═══','', m.summary||'',
+    '','═══ ACTION ITEMS ═══','',
+    ...ai.map((a,idx)=>`${idx+1}. ${a}`),
+    '','═══ KEYWORDS ═══','', (m.keywords||[]).join(' • '),
+    '','═══ CHAPTERS ═══','',
+    ...(m.chapters||[]).map(c=>`[${c.time}] ${c.text}`),
+    '','Generated by SHIVA\'s MindNote Faculty Edition'
+  ].join('\n');
+  const a = document.createElement('a');
+  a.href     = URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+  a.download = (m.title||'meeting').replace(/[^a-z0-9]/gi,'_') + '.txt';
+  a.click();
+  showNotify('📥 Exported as TXT','success');
+}
+
+function exportAllData() {
+  const data = { meetings, plannedMeetings, facultyGroups, vaultFiles: vaultFiles.map(f=>({...f,dataUrl:'[omitted]'})) };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download = 'mindnote_backup.json';
+  a.click();
+  showNotify('📥 Data exported','success');
+}
+
+function clearAllData() {
+  if(confirm('Clear ALL data? This cannot be undone.')) {
+    localStorage.removeItem('mindnote_meetings');
+    localStorage.removeItem('mindnote_planned');
+    localStorage.removeItem('mindnote_faculty_groups');
+    localStorage.removeItem('mindnote_vault');
+    meetings=[]; plannedMeetings=[]; facultyGroups=[]; vaultFiles=[];
+    switchPage('upload');
+    showNotify('🗑 All data cleared','success');
+  }
+}
+
+function copyText(id) {
+  const el = document.getElementById(id);
+  if(el) navigator.clipboard.writeText(el.textContent).then(()=>showNotify('📋 Copied!','success'));
+}
+
+function doSmartSearch() {
+  const q = document.getElementById('smartSearch')?.value.trim();
+  if(!q) return;
+  const ql = q.toLowerCase();
+  const results = meetings.filter(m =>
+    [m.title,m.transcript,m.summary,...(m.actionItems||[]),...(m.keywords||[])]
+      .some(t=>(t||'').toLowerCase().includes(ql))
+  );
+  const container = document.getElementById('searchResults');
+  if(!container) return;
+  if(!results.length) {
+    container.innerHTML = `<div class="empty"><span class="empty-icon">🔎</span><div class="empty-title">No results for "${escHtml(q)}"</div></div>`;
+    return;
+  }
+  container.innerHTML =
+    `<div style="font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:600">${results.length} note(s) found for "${escHtml(q)}"</div>
+    <div class="meetings-list">` +
+    results.map(m=>`<div class="meeting-row" onclick="viewMeeting(${meetings.indexOf(m)})">
+      <div class="meeting-thumb">🧠</div>
+      <div class="meeting-info">
+        <div class="meeting-title">${highlight(escHtml(m.title),q)}</div>
+        <div class="meeting-meta"><span>${m.date}</span><span>${m.lang}</span><span>${m.wordCount||0} words</span></div>
+      </div>
+      <span class="status-chip status-done">✓ Done</span>
+    </div>`).join('') + `</div>`;
+}
+
+function highlight(text, q) {
+  if(!q||!text) return text;
+  return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),
+    '<mark style="background:rgba(37,99,235,0.15);color:var(--accent);border-radius:3px;padding:0 2px">$1</mark>');
+}
+
+function filterMeetings(q) {
+  const container = document.getElementById('meetingsList');
+  if(!container) return;
+  const filtered = q ? meetings.filter(m=>(m.title||'').toLowerCase().includes(q.toLowerCase())) : meetings;
+  if(!filtered.length) {
+    container.innerHTML = `<div class="empty"><span class="empty-icon">📂</span><div class="empty-title">No matches</div></div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(m=>`
+    <div class="meeting-row" onclick="viewMeeting(${meetings.indexOf(m)})">
+      <div class="meeting-thumb">🧠</div>
+      <div class="meeting-info">
+        <div class="meeting-title">${escHtml(m.title)}</div>
+        <div class="meeting-meta"><span>📅 ${m.date}</span><span>⏱️ ${m.duration}</span><span>🌐 ${m.lang}</span><span>💬 ${m.wordCount||0} words</span></div>
+      </div>
+      <span class="status-chip status-done">✓ Done</span>
+      <div class="meeting-actions">
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();exportMeeting(${meetings.indexOf(m)})">⬇ Export</button>
+        <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteMeeting(${meetings.indexOf(m)})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function saveApiKey() {
+  const k = document.getElementById('apiKeyInput')?.value.trim();
+  if(k) { localStorage.setItem('mindnote_apikey',k); showNotify('🔑 Gemini API key saved!','success'); }
+  else  { showNotify('⚠️ Please enter a valid API key','error'); }
+}
+
+function showNotify(msg, type='success') {
+  if(notification) notification.remove();
+  const n     = document.createElement('div');
+  n.className = `notify ${type}`;
+  n.textContent = msg;
+  document.body.appendChild(n);
+  notification = n;
+  setTimeout(()=>{ n.style.animation='slideIn 0.3s ease reverse'; setTimeout(()=>n.remove(),280); }, 3300);
+}
+
+function escHtml(str) {
+  if(!str && str!==0) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function delay(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+// ══════════════════════════════════════
+// EVENTS
+// ══════════════════════════════════════
+function bindEvents() {
+  // Audio upload
+  const dz = document.getElementById('dropZone');
+  const fi = document.getElementById('fileInput');
+  if(dz) {
+    dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('drag');});
+    dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+    dz.addEventListener('drop', e=>{
+      e.preventDefault(); dz.classList.remove('drag');
+      const f = e.dataTransfer.files[0]; if(f) processFile(f);
+    });
+  }
+  if(fi) fi.addEventListener('change', e=>{ if(e.target.files[0]) processFile(e.target.files[0]); });
+
+  // Vault file upload
+  const vdz = document.getElementById('vaultDropZone');
+  const vfi = document.getElementById('vaultFileInput');
+  if(vdz) {
+    vdz.addEventListener('dragover', e=>{e.preventDefault();vdz.classList.add('drag');});
+    vdz.addEventListener('dragleave', ()=>vdz.classList.remove('drag'));
+    vdz.addEventListener('drop', e=>{
+      e.preventDefault(); vdz.classList.remove('drag');
+      const ref   = document.getElementById('vaultMeetingRef')?.value||'';
+      const atag  = document.getElementById('vaultAgendaTag')?.value.trim()||'';
+      if(e.dataTransfer.files.length) handleVaultUpload(e.dataTransfer.files, ref, atag);
+    });
+  }
+  if(vfi) vfi.addEventListener('change', e=>{
+    if(e.target.files.length) {
+      const ref  = document.getElementById('vaultMeetingRef')?.value||'';
+      const atag = document.getElementById('vaultAgendaTag')?.value.trim()||'';
+      handleVaultUpload(e.target.files, ref, atag);
+    }
+  });
+}
+
+// ── BOOT ──
+render();
+</script>
+</body>
+</html>
